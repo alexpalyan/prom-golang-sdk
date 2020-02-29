@@ -1,6 +1,10 @@
 // order
 package prom
 
+import (
+	"fmt"
+)
+
 type Order struct {
 	Id               int    `json:"id"`
 	DateCreated      string `json:"date_created"`
@@ -38,4 +42,15 @@ type Order struct {
 type Orders struct {
 	Orders []Order `json:"orders"`
 	Error  string  `json:"error"`
+}
+
+func (acc *PromAccount) RequestOrders(params map[string]string) (orders []Order, err error) {
+	var result Orders
+
+	err = acc.client.Request("orders/list", params, &result)
+	if err != nil {
+		return nil, fmt.Errorf("Error when request orders: %s", result.Error)
+	}
+
+	return result.Orders, nil
 }
