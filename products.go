@@ -62,18 +62,18 @@ type ProductsRequest struct {
 
 type ProductEdit struct {
 	Id           int     `json:"id"`
-	Presence     string  `json:"presence,omitempty"`
-	PresenceSure bool    `json:"presence_sure,omitempty"`
-	Price        float64 `json:"price,omitempty"`
-	Status       string  `json:"status,omitempty"`
+	Presence     string  `json:"presence"`
+	PresenceSure bool    `json:"presence_sure"`
+	Price        float64 `json:"price"`
+	Status       string  `json:"status"`
 	Prices       []struct {
 		Price                float64 `json:"price"`
 		MinimumOrderQuantity float64 `json:"minimum_order_quantity"`
 	} `json:"prices,omitempty"`
-	Discount    *Discount `json:"discount,omitempty"`
-	Name        string    `json:"name,omitempty"`
-	Keywords    string    `json:"keywords,omitempty"`
-	Description string    `json:"description,omitempty"`
+	Discount    *Discount `json:"discount"`
+	Name        string    `json:"name"`
+	Keywords    string    `json:"keywords"`
+	Description string    `json:"description"`
 }
 
 type ProductEditResponce struct {
@@ -81,6 +81,11 @@ type ProductEditResponce struct {
 	Errors       interface{} `json:"errors"`
 	Error        interface{} `json:"error"`
 }
+
+const (
+	DiscountTypeAmount  = "amount"
+	DiscountTypePercent = "percent"
+)
 
 func (acc *PromAccount) GetProducts(request ProductsRequest) (products []Product, err error) {
 	var (
@@ -92,17 +97,19 @@ func (acc *PromAccount) GetProducts(request ProductsRequest) (products []Product
 		params["group_id"] = strconv.Itoa(request.GroupId)
 	}
 
-	if request.Limit > 0 && request.Limit <= 100 {
-		params["limit"] = strconv.Itoa(request.Limit)
-	} else if request.Limit > 100 {
-		params["limit"] = "100"
-	}
-
 	if request.LastId > 0 {
 		params["last_id"] = strconv.Itoa(request.LastId)
 	}
+	limit := request.Limit
 
 	for {
+		if limit > 0 && limit <= 100 {
+			params["limit"] = strconv.Itoa(request.Limit)
+		} else if limit > 100 {
+			params["limit"] = "100"
+			limit = limit - 100
+		}
+
 		err = acc.client.Get("products/list", params, &result)
 		if err != nil {
 			return nil, fmt.Errorf("Error when request products: %s", result.Error)
@@ -112,7 +119,7 @@ func (acc *PromAccount) GetProducts(request ProductsRequest) (products []Product
 			products = append(products, result.Products...)
 			params["last_id"] = strconv.Itoa(result.Products[len(result.Products)-1].Id)
 		}
-		if len(result.Products) < int(math.Min(100.0, float64(request.Limit))) {
+		if len(result.Products) <= int(math.Min(100.0, float64(limit))) {
 			break
 		}
 	}
@@ -120,10 +127,35 @@ func (acc *PromAccount) GetProducts(request ProductsRequest) (products []Product
 	return
 }
 
-func (acc *PromAccount) UpdateProducts(product []Product) (err error) {
+func (acc *PromAccount) UpdateProducts(product []ProductEdit) (err error) {
 
 	var result ProductEditResponce
 	acc.client.Post("products/edit", product, &result)
 	fmt.Printf("%#v", result)
 	return nil
+}
+
+func NewProductEdit(product Product) (result ProductEdit) {
+	result = ProductEdit{
+		Id:           product.Id,
+		Presence:     product.Presence,
+		PresenceSure: product.PresenceSure,
+		Price:        product.Price,
+		Status:       product.Status,
+		Prices:       append(product.Prices[:0:0], product.Prices...),
+		Name:         product.Name,
+		Keywords:     product.Keywords,
+		Description:  product.Description,
+	}
+
+	if product.Discount != nil {
+		result.Discount = &Discount{
+			Value:     product.Discount.Value,
+			Type:      product.Discount.Type,
+			DateStart: product.Discount.DateStart,
+			DateEnd:   product.Discount.DateEnd,
+		}
+	}
+
+	return
 }
