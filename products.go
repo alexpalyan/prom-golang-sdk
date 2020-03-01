@@ -105,7 +105,7 @@ func (acc *PromAccount) GetProducts(request ProductsRequest) (products []Product
 
 	for {
 		if limit > 0 && limit <= 100 {
-			params["limit"] = strconv.Itoa(request.Limit)
+			params["limit"] = strconv.Itoa(limit)
 		} else if limit > 100 {
 			params["limit"] = "100"
 			limit = limit - 100
