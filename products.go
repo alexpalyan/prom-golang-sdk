@@ -85,6 +85,7 @@ type ProductEditResponce struct {
 const (
 	DiscountTypeAmount  = "amount"
 	DiscountTypePercent = "percent"
+	DiscountDateFormat  = "02.01.2006"
 )
 
 func (acc *PromAccount) GetProducts(request ProductsRequest) (products []Product, err error) {
