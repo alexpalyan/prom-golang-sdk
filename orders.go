@@ -47,7 +47,7 @@ type Orders struct {
 func (acc *PromAccount) RequestOrders(params map[string]string) (orders []Order, err error) {
 	var result Orders
 
-	err = acc.client.Request("orders/list", params, &result)
+	err = acc.client.Get("orders/list", params, &result)
 	if err != nil {
 		return nil, fmt.Errorf("Error when request orders: %s", result.Error)
 	}
