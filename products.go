@@ -3,6 +3,7 @@ package prom
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -129,11 +130,14 @@ func (acc *PromAccount) GetProducts(request ProductsRequest) (products []Product
 	return
 }
 
-func (acc *PromAccount) UpdateProducts(product []ProductEdit) (err error) {
+func (acc *PromAccount) UpdateProducts(products []ProductEdit) (err error) {
 
 	var result ProductEditResponse
-	acc.client.Post("products/edit", product, &result)
-	fmt.Printf("%#v", result)
+	for len(products) > 0 {
+		acc.client.Post("products/edit", products[0:int(math.Min(100.0, float64(len(products))))], &result)
+		fmt.Printf("%#v", result)
+		products = products[int(math.Min(100.0, float64(len(products)))):]
+	}
 	return nil
 }
 
