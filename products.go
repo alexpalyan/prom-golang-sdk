@@ -3,7 +3,6 @@ package prom
 
 import (
 	"fmt"
-	"math"
 	"strconv"
 )
 
@@ -86,6 +85,7 @@ const (
 	DiscountTypeAmount  = "amount"
 	DiscountTypePercent = "percent"
 	DiscountDateFormat  = "02.01.2006"
+	MaxLimit            = 100
 )
 
 func (acc *PromAccount) GetProducts(request ProductsRequest) (products []Product, err error) {
@@ -105,11 +105,10 @@ func (acc *PromAccount) GetProducts(request ProductsRequest) (products []Product
 
 	for {
 		result = ProductsResponse{}
-		if limit > 0 && limit <= 100 {
+		if limit > 0 && limit <= MaxLimit {
 			params["limit"] = strconv.Itoa(limit)
-		} else if limit > 100 {
-			params["limit"] = "100"
-			limit = limit - 100
+		} else if limit > MaxLimit {
+			params["limit"] = strconv.Itoa(MaxLimit)
 		}
 
 		err = acc.client.Get("products/list", params, &result)
@@ -121,9 +120,10 @@ func (acc *PromAccount) GetProducts(request ProductsRequest) (products []Product
 			products = append(products, result.Products...)
 			params["last_id"] = strconv.Itoa(result.Products[len(result.Products)-1].Id)
 		}
-		if len(result.Products) < int(math.Min(100.0, float64(limit))) {
+		if limit <= MaxLimit || len(products) < MaxLimit {
 			break
 		}
+		limit = limit - MaxLimit
 	}
 
 	return
