@@ -11,15 +11,18 @@ import (
 
 type Client struct {
 	apiKey string
+	apiUrl string
 }
 
 func NewClient(apiKey string) *Client {
-	c := new(Client)
-	c.apiKey = apiKey
+	c := &Client{
+		apiUrl: defaultApiUrl,
+		apiKey: apiKey,
+	}
 	return c
 }
 
-const apiUrl = "https://my.prom.ua/api/v1/"
+const defaultApiUrl = "https://my.prom.ua/api/v1"
 
 func (c *Client) Request(req *http.Request, v interface{}) (err error) {
 
@@ -46,7 +49,7 @@ func (c *Client) Request(req *http.Request, v interface{}) (err error) {
 }
 
 func (c *Client) Get(route string, params map[string]string, v interface{}) (err error) {
-	req, err := http.NewRequest(http.MethodGet, apiUrl+route, nil)
+	req, err := http.NewRequest(http.MethodGet, c.apiUrl+route, nil)
 	if err != nil {
 		return
 	}
@@ -71,7 +74,7 @@ func (c *Client) Post(route string, data interface{}, v interface{}) (err error)
 		}
 	}()
 
-	req, err := http.NewRequest(http.MethodPost, apiUrl+route, r)
+	req, err := http.NewRequest(http.MethodPost, c.apiUrl+route, r)
 	if err != nil {
 		return
 	}

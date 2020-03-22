@@ -44,10 +44,10 @@ type Orders struct {
 	Error  string  `json:"error"`
 }
 
-func (acc *PromAccount) RequestOrders(params map[string]string) (orders []Order, err error) {
+func (c *Client) RequestOrders(params map[string]string) (orders []Order, err error) {
 	var result Orders
 
-	err = acc.client.Get("orders/list", params, &result)
+	err = c.Get("orders/list", params, &result)
 	if err != nil {
 		return nil, fmt.Errorf("Error when request orders: %s", result.Error)
 	}

@@ -89,58 +89,6 @@ const (
 	MaxLimit            = 100
 )
 
-func (acc *PromAccount) GetProducts(request ProductsRequest) (products []Product, err error) {
-	var (
-		result ProductsResponse
-		params map[string]string = make(map[string]string)
-	)
-
-	if request.GroupId >= 0 {
-		params["group_id"] = strconv.Itoa(request.GroupId)
-	}
-
-	if request.LastId > 0 {
-		params["last_id"] = strconv.Itoa(request.LastId)
-	}
-	limit := request.Limit
-
-	for {
-		result = ProductsResponse{}
-		if limit > 0 && limit <= MaxLimit {
-			params["limit"] = strconv.Itoa(limit)
-		} else if limit > MaxLimit {
-			params["limit"] = strconv.Itoa(MaxLimit)
-		}
-
-		err = acc.client.Get("products/list", params, &result)
-		if err != nil {
-			return nil, fmt.Errorf("Error when request products: %s", err)
-		}
-
-		if len(result.Products) > 0 {
-			products = append(products, result.Products...)
-			params["last_id"] = strconv.Itoa(result.Products[len(result.Products)-1].Id)
-		}
-		if limit <= MaxLimit || len(products) < MaxLimit {
-			break
-		}
-		limit = limit - MaxLimit
-	}
-
-	return
-}
-
-func (acc *PromAccount) UpdateProducts(products []ProductEdit) (err error) {
-
-	var result ProductEditResponse
-	for len(products) > 0 {
-		acc.client.Post("products/edit", products[0:int(math.Min(100.0, float64(len(products))))], &result)
-		fmt.Printf("%#v", result)
-		products = products[int(math.Min(100.0, float64(len(products)))):]
-	}
-	return nil
-}
-
 func NewProductEdit(product Product) (result ProductEdit) {
 	result = ProductEdit{
 		Id:           product.Id,
@@ -164,4 +112,56 @@ func NewProductEdit(product Product) (result ProductEdit) {
 	}
 
 	return
+}
+
+func (c *Client) GetProducts(request ProductsRequest) (products []Product, err error) {
+	var (
+		result ProductsResponse
+		params map[string]string = make(map[string]string)
+	)
+
+	if request.GroupId >= 0 {
+		params["group_id"] = strconv.Itoa(request.GroupId)
+	}
+
+	if request.LastId > 0 {
+		params["last_id"] = strconv.Itoa(request.LastId)
+	}
+	limit := request.Limit
+
+	for {
+		result = ProductsResponse{}
+		if limit > 0 && limit <= MaxLimit {
+			params["limit"] = strconv.Itoa(limit)
+		} else if limit > MaxLimit {
+			params["limit"] = strconv.Itoa(MaxLimit)
+		}
+
+		err = c.Get("/products/list", params, &result)
+		if err != nil {
+			return nil, fmt.Errorf("Error when request products: %s", err)
+		}
+
+		if len(result.Products) > 0 {
+			products = append(products, result.Products...)
+			params["last_id"] = strconv.Itoa(result.Products[len(result.Products)-1].Id)
+		}
+		if limit <= MaxLimit || len(products) < MaxLimit {
+			break
+		}
+		limit = limit - MaxLimit
+	}
+
+	return
+}
+
+func (c *Client) UpdateProducts(products []ProductEdit) (err error) {
+
+	var result ProductEditResponse
+	for len(products) > 0 {
+		c.Post("/products/edit", products[0:int(math.Min(100.0, float64(len(products))))], &result)
+		fmt.Printf("%#v", result)
+		products = products[int(math.Min(100.0, float64(len(products)))):]
+	}
+	return nil
 }
