@@ -1,7 +1,6 @@
 package prom
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -27,7 +26,6 @@ type DummyPostRequest struct {
 func ServerDummy(w http.ResponseWriter, r *http.Request) {
 	authKey := r.Header.Get("Authorization")
 
-	fmt.Println(authKey)
 	if authKey != "Bearer authorizedTestKey" {
 		w.WriteHeader(http.StatusUnauthorized)
 		w.Write([]byte(`<html>
@@ -58,6 +56,7 @@ Not Authenticated
 			w.Write([]byte("{\"data\": \"a new data not error\"}"))
 			return
 		}
+
 	} else if r.Method == http.MethodPost {
 
 	} else {
@@ -148,5 +147,4 @@ func TestPost(t *testing.T) {
 	var response DummyResponse
 	request := &DummyPostRequest{}
 	c.Post("/test/post", request, &response)
-	fmt.Printf("%#v", response)
 }
