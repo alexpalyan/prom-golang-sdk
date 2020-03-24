@@ -7,6 +7,30 @@ import (
 	"time"
 )
 
+const (
+	OrderStatusPending   = "pending"
+	OrderStatusReceived  = "received"
+	OrderStatusDelivered = "delivered"
+	OrderStatusCanceled  = "canceled"
+	OrderStatusDraft     = "draft"
+	OrderStatusPaid      = "paid"
+
+	OrderSourcePortal         = "portal"
+	OrderSourceCompanySite    = "company_site"
+	OrderSourceCompanyCabinet = "company_cabinet"
+	OrderSourceMobileApp      = "mobile_app"
+	OrderSourceBigl           = "bigl"
+
+	OrderCancellationReasonNotAvailable         = "not_available"
+	OrderCancellationReasonPriceChanged         = "price_changed"
+	OrderCancellationReasonBuyersRequest        = "buyers_request"
+	OrderCancellationReasonNotEnoughFields      = "not_enough_fields"
+	OrderCancellationReasonDuplicate            = "duplicate"
+	OrderCancellationReasonInvalidPhoneNumber   = "invalid_phone_number"
+	OrderCancellationReasonLessThanMinimalPrice = "less_than_minimal_price"
+	OrderCancellationReasonAnother              = "another"
+)
+
 type Order struct {
 	Id               int    `json:"id"`
 	DateCreated      string `json:"date_created"`
@@ -48,12 +72,29 @@ type OrdersResponse struct {
 	Error  string  `json:"error"`
 }
 
+type OrderResponse struct {
+	Order Order  `json:"order"`
+	Error string `json:"error"`
+}
+
 type OrdersRequest struct {
 	Status   string
 	DateFrom time.Time
 	DateTo   time.Time
 	Limit    int
 	LastId   int
+}
+
+type SetOrderStatus struct {
+	Status             string `json:"status"`
+	Ids                []int  `json:"ids"`
+	CancellationReason string `json:"cancellation_reason,omitempty"`
+	CancellationText   string `json:"cancellation_text,omitempty"`
+}
+
+type OrdersSetStatusResponse struct {
+	ProcessedIds []int `json:"processed_ids"`
+	Error        string
 }
 
 func (c *Client) GetOrders(request OrdersRequest) (orders []Order, err error) {
@@ -91,6 +132,9 @@ func (c *Client) GetOrders(request OrdersRequest) (orders []Order, err error) {
 		if err != nil {
 			return nil, fmt.Errorf("Error when request orders: %s", err)
 		}
+		if len(result.Error) > 0 {
+			return nil, fmt.Errorf("Error when request orders: %s", result.Error)
+		}
 
 		if len(result.Orders) > 0 {
 			orders = append(orders, result.Orders...)
@@ -102,5 +146,38 @@ func (c *Client) GetOrders(request OrdersRequest) (orders []Order, err error) {
 		limit = limit - MaxLimit
 	}
 
+	return
+}
+
+func (c *Client) GetOrder(id int) (order Order, err error) {
+	var result OrderResponse
+
+	err = c.Get("/orders/"+strconv.Itoa(id), nil, &result)
+	if err != nil {
+		err = fmt.Errorf("Error when request order: %s", err)
+		return
+	}
+
+	if len(result.Error) > 0 {
+		err = fmt.Errorf("Error when request order: %s", result.Error)
+		return
+	}
+
+	order = result.Order
+	return
+}
+
+func (c *Client) UpdateOrdersStatus(s SetOrderStatus) (ids []int, err error) {
+	var result OrdersSetStatusResponse
+	err = c.Post("/orders/set_status", s, &result)
+	if err != nil {
+		err = fmt.Errorf("Error when set_status orders: %s", err)
+		return
+	}
+	if len(result.Error) > 0 {
+		err = fmt.Errorf("Error when set_status orders: %s", result.Error)
+		return
+	}
+	ids = result.ProcessedIds
 	return
 }
