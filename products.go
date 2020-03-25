@@ -3,7 +3,6 @@ package prom
 
 import (
 	"fmt"
-	"math"
 	"net/url"
 	"strconv"
 )
@@ -322,7 +321,7 @@ func (c *Client) UpdateProducts(products []ProductEdit) (updatedIds []int, err e
 	return
 }
 
-func (c *Client) UpdateProductsByExternalId(products []ProductEditByExternalId) (err error) {
+func (c *Client) UpdateProductsByExternalId(products []ProductEditByExternalId) (updatedIds []int, err error) {
 	var result ProductEditResponse
 	err = c.Post("/products/edit_by_external_id", products, &result)
 	if err != nil {

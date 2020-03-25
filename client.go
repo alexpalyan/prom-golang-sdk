@@ -24,6 +24,8 @@ func NewClient(apiKey string) *Client {
 
 const defaultApiUrl = "https://my.prom.ua/api/v1"
 
+const RequestDateFormat = "2006-01-02T15:04:05"
+
 func (c *Client) Request(req *http.Request, v interface{}) (err error) {
 
 	req.Header.Set("Authorization", "Bearer "+c.apiKey)

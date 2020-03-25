@@ -108,11 +108,11 @@ func (c *Client) GetOrders(request OrdersRequest) (orders []Order, err error) {
 	}
 
 	if !request.DateFrom.IsZero() {
-		params["date_from"] = request.DateFrom.Format("2006-01-02T15:04:05")
+		params["date_from"] = request.DateFrom.Format(RequestDateFormat)
 	}
 
 	if !request.DateTo.IsZero() {
-		params["date_from"] = request.DateTo.Format("2006-01-02T15:04:05")
+		params["date_from"] = request.DateTo.Format(RequestDateFormat)
 	}
 
 	if request.LastId > 0 {
