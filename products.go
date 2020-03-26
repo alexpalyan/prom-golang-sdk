@@ -146,9 +146,9 @@ type ProductEditByExternalId struct {
 }
 
 type ProductEditResponse struct {
-	ProcessedIds []int                    `json:"processed_ids"`
-	Errors       []map[string]interface{} `json:"errors"`
-	Error        string                   `json:"error"`
+	ProcessedIds []int                  `json:"processed_ids"`
+	Errors       map[string]interface{} `json:"errors"`
+	Error        string                 `json:"error"`
 }
 
 type ImportProductURL struct {
@@ -196,11 +196,6 @@ type ImportProductStatus struct {
 	} `json:"errors"`
 	Message string `json:"message"`
 }
-
-const (
-	DiscountDateFormat = "02.01.2006"
-	MaxLimit           = 100
-)
 
 func NewProductEdit(product Product) (result ProductEdit) {
 	result = ProductEdit{

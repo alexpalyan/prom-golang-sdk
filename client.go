@@ -24,7 +24,12 @@ func NewClient(apiKey string) *Client {
 
 const defaultApiUrl = "https://my.prom.ua/api/v1"
 
-const RequestDateFormat = "2006-01-02T15:04:05"
+const (
+	RequestDateTimeFormat = "2006-01-02T15:04:05"
+	RequestDateFormat     = "02.01.2006"
+	DiscountDateFormat    = "02.01.2006"
+	MaxLimit              = 100
+)
 
 func (c *Client) Request(req *http.Request, v interface{}) (err error) {
 
