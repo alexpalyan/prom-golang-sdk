@@ -266,7 +266,7 @@ func (c *Client) GetProducts(request ProductsRequest) (products []Product, err e
 func (c *Client) GetProduct(id int) (product Product, err error) {
 	var result ProductResponse
 
-	err = c.Get("/product/"+strconv.Itoa(id), nil, result)
+	err = c.Get("/products/"+strconv.Itoa(id), nil, result)
 	if err != nil {
 		err = fmt.Errorf("Error when request product: %s", err)
 		return
