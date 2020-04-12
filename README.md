@@ -15,9 +15,8 @@ import "github.com/freedayko/prom-golang-sdk"
 Get Products
 
 ```go
-	p := prom.NewClient(cfg.Prom.ApiKey)
+	p := prom.NewClient("<abcdef0123456789-you-prom-api-key>")
 
-	// err = p.RequestOrders(map[string]string{ /*"status": "pending"*/ "limit": "2"})
 	var request = prom.ProductsRequest{
 		GroupId: 0,
 		Limit:   2000,
