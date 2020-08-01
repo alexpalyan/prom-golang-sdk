@@ -120,15 +120,15 @@ type ProductResponse struct {
 
 type ProductEdit struct {
 	Id           int            `json:"id"`
-	Presence     string         `json:"presence"`
-	PresenceSure bool           `json:"presence_sure"`
-	Price        float64        `json:"price"`
-	Status       string         `json:"status"`
+	Presence     string         `json:"presence,omitempty"`
+	PresenceSure bool           `json:"presence_sure,omitempty"`
+	Price        float64        `json:"price,omitempty"`
+	Status       string         `json:"status,omitempty"`
 	Prices       []ProductPrice `json:"prices,omitempty"`
-	Discount     *Discount      `json:"discount"`
-	Name         string         `json:"name"`
-	Keywords     string         `json:"keywords"`
-	Description  string         `json:"description"`
+	Discount     *Discount      `json:"discount,omitempty"`
+	Name         string         `json:"name,omitempty"`
+	Keywords     string         `json:"keywords,omitempty"`
+	Description  string         `json:"description,omitempty"`
 }
 
 type ProductEditByExternalId struct {
