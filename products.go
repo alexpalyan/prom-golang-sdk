@@ -222,11 +222,15 @@ func NewProductEdit(product Product) (result ProductEdit) {
 	return
 }
 
-func (c *Client) GetProducts(request ProductsRequest) (products []Product, err error) {
+func (c *Client) GetProducts(request ProductsRequest) ([]Product, error) {
 	var (
 		result ProductsResponse
 		params map[string]string = make(map[string]string)
 	)
+
+	if request.Limit > MaxLimit {
+		return nil, fmt.Errorf("ProductsRequest.Limit can't be more than MaxLimit: %d > %d", request.Limit, MaxLimit)
+	}
 
 	if request.GroupId >= 0 {
 		params["group_id"] = strconv.Itoa(request.GroupId)
@@ -235,32 +239,19 @@ func (c *Client) GetProducts(request ProductsRequest) (products []Product, err e
 	if request.LastId > 0 {
 		params["last_id"] = strconv.Itoa(request.LastId)
 	}
-	limit := request.Limit
 
-	for {
-		result = ProductsResponse{}
-		if limit > 0 && limit <= MaxLimit {
-			params["limit"] = strconv.Itoa(limit)
-		} else if limit > MaxLimit {
-			params["limit"] = strconv.Itoa(MaxLimit)
-		}
-
-		err = c.Get("/products/list", params, &result)
-		if err != nil {
-			return nil, fmt.Errorf("Error when request products: %s", err)
-		}
-
-		if len(result.Products) > 0 {
-			products = append(products, result.Products...)
-			params["last_id"] = strconv.Itoa(result.Products[len(result.Products)-1].Id)
-		}
-		if limit <= MaxLimit || len(products) < MaxLimit {
-			break
-		}
-		limit = limit - MaxLimit
+	if request.Limit > 0 {
+		params["limit"] = strconv.Itoa(request.Limit)
 	}
 
-	return
+	result = ProductsResponse{}
+
+	err := c.Get("/products/list", params, &result)
+	if err != nil {
+		return nil, fmt.Errorf("Error when request products: %s", err)
+	}
+
+	return result.Products, nil
 }
 
 func (c *Client) GetProduct(id int) (product Product, err error) {
