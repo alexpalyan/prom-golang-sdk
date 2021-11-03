@@ -29,6 +29,21 @@ const (
 	OrderCancellationReasonInvalidPhoneNumber   = "invalid_phone_number"
 	OrderCancellationReasonLessThanMinimalPrice = "less_than_minimal_price"
 	OrderCancellationReasonAnother              = "another"
+
+	OrderDeliveryProviderDataProviderNovaPoshta   = "nova_poshta"
+	OrderDeliveryProviderDataProviderJustin       = "justin"
+	OrderDeliveryProviderDataProviderDeliveryAuto = "delivery_auto"
+	OrderDeliveryProviderDataProviderUkrposhta    = "ukrposhta"
+
+	OrderDeliveryProviderDataTypeW2W = "W2W"
+	OrderDeliveryProviderDataTypeW2D = "W2D"
+	OrderDeliveryProviderDataTypeD2W = "D2W"
+	OrderDeliveryProviderDataTypeD2D = "D2D"
+
+	OrderPaymentDataStatusPaid     = "paid"
+	OrderPaymentDataStatusUnPaid   = "unpaid"
+	OrderPaymentDataStatusRefunded = "refunded"
+	OrderPaymentDataStatusPaidOut  = "paid_out"
 )
 
 type Order struct {
@@ -58,11 +73,23 @@ type Order struct {
 		Id   int    `json:"id"`
 		Name string `json:"name"`
 	} `json:"delivery_option"`
+	DeliveryProviderData struct {
+		Provider             string `json:"nova_poshta"`
+		Type                 string `json:"type"`
+		SenderWarehouseId    string `json:"sender_warehouse_id"`
+		RecipientWarehouseId string `json:"recipient_warehouse_id"`
+		DeclarationNumber    string `json:"declaration_number"`
+	} `json:"delivery_provider_data"`
 	DeliveryAddress string `json:"delivery_address"`
 	PaymentOption   struct {
 		Id   int    `json:"id"`
 		Name string `json:"name"`
-	}
+	} `json:"payment_option"`
+	PaymentData struct {
+		Type           string `json:"type"`
+		Status         string `json:"status"`
+		StatusModified string `json:"status_modified"`
+	} `json:"payment_data"`
 	Status string `json:"status"`
 	Source string `json:"source"`
 }
