@@ -3,7 +3,6 @@ package prom
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -41,12 +40,15 @@ func (c *Client) Request(req *http.Request, v interface{}) (err error) {
 	}
 	defer resp.Body.Close()
 
+	respBody, err := ioutil.ReadAll(resp.Body)
+
 	if resp.StatusCode >= 400 {
-		err = fmt.Errorf("Error when request: %s", resp.Status)
+		err = &ClientError{
+			Code: resp.StatusCode,
+			Body: string(respBody),
+		}
 		return
 	}
-
-	respBody, err := ioutil.ReadAll(resp.Body)
 
 	if err = json.Unmarshal(respBody, v); err != nil {
 		return

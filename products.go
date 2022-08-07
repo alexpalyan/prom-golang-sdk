@@ -225,7 +225,7 @@ func NewProductEdit(product Product) (result ProductEdit) {
 func (c *Client) GetProducts(request ProductsRequest) ([]Product, error) {
 	var (
 		result ProductsResponse
-		params map[string]string = make(map[string]string)
+		params = make(map[string]string)
 	)
 
 	if request.Limit > MaxLimit {

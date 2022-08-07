@@ -65,7 +65,7 @@ type MessageReplyResponse struct {
 func (c *Client) GetMessages(request MessagesRequest) (messages []Message, err error) {
 	var (
 		result MessagesResponse
-		params map[string]string = make(map[string]string)
+		params = make(map[string]string)
 	)
 
 	if !request.DateFrom.IsZero() {

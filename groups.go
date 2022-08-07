@@ -26,7 +26,7 @@ type GroupsResponse struct {
 func (c *Client) GetGroups(request GroupsRequest) (groups []Group, err error) {
 	var (
 		result GroupsResponse
-		params map[string]string = make(map[string]string)
+		params = make(map[string]string)
 	)
 
 	if request.LastId > 0 {

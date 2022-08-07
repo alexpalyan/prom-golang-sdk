@@ -127,7 +127,7 @@ type OrdersSetStatusResponse struct {
 func (c *Client) GetOrders(request OrdersRequest) (orders []Order, err error) {
 	var (
 		result OrdersResponse
-		params map[string]string = make(map[string]string)
+		params = make(map[string]string)
 	)
 
 	if len(request.Status) > 0 {
@@ -135,11 +135,11 @@ func (c *Client) GetOrders(request OrdersRequest) (orders []Order, err error) {
 	}
 
 	if !request.DateFrom.IsZero() {
-		params["date_from"] = request.DateFrom.Format(RequestDateFormat)
+		params["date_from"] = request.DateFrom.Format(RequestDateTimeFormat)
 	}
 
 	if !request.DateTo.IsZero() {
-		params["date_to"] = request.DateTo.Format(RequestDateFormat)
+		params["date_to"] = request.DateTo.Format(RequestDateTimeFormat)
 	}
 
 	if request.LastId > 0 {
@@ -181,12 +181,12 @@ func (c *Client) GetOrder(id int) (order Order, err error) {
 
 	err = c.Get("/orders/"+strconv.Itoa(id), nil, &result)
 	if err != nil {
-		err = fmt.Errorf("Error when request order: %s", err)
+		err = NewRequestError("order", err)
 		return
 	}
 
 	if len(result.Error) > 0 {
-		err = fmt.Errorf("Error when request order: %s", result.Error)
+		err = NewResponseError("order", result.Error)
 		return
 	}
 
@@ -198,11 +198,11 @@ func (c *Client) UpdateOrdersStatus(s SetOrderStatus) (ids []int, err error) {
 	var result OrdersSetStatusResponse
 	err = c.Post("/orders/set_status", s, &result)
 	if err != nil {
-		err = fmt.Errorf("Error when set_status orders: %s", err)
+		err = NewRequestError("set_status orders", err)
 		return
 	}
 	if len(result.Error) > 0 {
-		err = fmt.Errorf("Error when set_status orders: %s", result.Error)
+		err = NewResponseError("set_status orders", result.Error)
 		return
 	}
 	ids = result.ProcessedIds
