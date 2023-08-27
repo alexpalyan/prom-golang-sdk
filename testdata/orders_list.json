@@ -1,0 +1,216 @@
+{
+	"orders": [
+		{
+			"id": 123,
+			"date_created": "2023-05-05T06:21:40.176639+00:00",
+			"date_modified": "2023-05-09T17:01:38.920216+00:00",
+			"client_first_name": "Єгор",
+			"client_second_name": "",
+			"client_last_name": "Атаманчук",
+			"client_id": 543,
+			"email": null,
+			"phone": "+380671234567",
+			"delivery_option": {
+				"id": 852,
+				"name": "Доставка \"Нова Пошта\"",
+				"shipping_service": null
+			},
+			"delivery_address": "м. Харків, Відділення №142 (до 30 кг на одне місце): просп. Науки, 9",
+			"delivery_provider_data": {
+				"provider": "nova_poshta",
+				"type": "D2W",
+				"sender_warehouse_id": null,
+				"recipient_warehouse_id": "193ddf9f-5e60-11eb-a5a6-b8830365bd14",
+				"declaration_number": "20450706012345"
+			},
+			"delivery_cost": 0,
+			"payment_option": {
+				"id": 753,
+				"name": "Наложенный платеж \"Нова Пошта\""
+			},
+			"payment_data": null,
+			"price": "3 990 грн",
+			"full_price": "3 990 грн",
+			"client_notes": "Передзвонить мені будь ласка",
+			"products": [
+				{
+					"id": 234,
+					"external_id": null,
+					"name": "Бесплатная доставка по Украине в отделение Новой почты (при полной предоплате)",
+					"name_multilang": {
+						"ru": "Бесплатная доставка по Украине в отделение Новой почты (при полной предоплате)",
+						"uk": "Безкоштовна доставка по Україні у відділення Нової пошти (при повній передоплаті)"
+					},
+					"sku": "9999999",
+					"price": "0 грн",
+					"quantity": 1,
+					"measure_unit": "шт.",
+					"image": "https://images.prom.ua/234_w100_h100_besplatnaya-dostavka-po.jpg",
+					"url": "https://example.com/p234-besplatnaya-dostavka-ukraine.html",
+					"total_price": "0 грн",
+					"cpa_commission": {
+						"amount": "0.00"
+					}
+				},
+				{
+					"id": 345,
+					"external_id": null,
+					"name": "Деревянная открытка в подарок (при полной предоплате)",
+					"name_multilang": {
+						"ru": "Деревянная открытка в подарок (при полной предоплате)",
+						"uk": "Дерев'яна листівка в подарунок (при повній передоплаті)"
+					},
+					"sku": "99999999",
+					"price": "0 грн",
+					"quantity": 1,
+					"measure_unit": "шт.",
+					"image": "https://images.prom.ua/345_w100_h100_derevyannaya-otkrytka.jpg",
+					"url": "https://example.com/p345-derevyannaya-otkrytka.html",
+					"total_price": "0 грн",
+					"cpa_commission": {
+						"amount": "0.00"
+					}
+				},
+				{
+					"id": 346,
+					"external_id": "654",
+					"name": "Оригинальный подарок на День Рождения",
+					"name_multilang": {
+						"ru": "Оригинальный подарок на День Рождения",
+						"uk": "Оригінальний подарунок на День Народження"
+					},
+					"sku": "Extern85",
+					"price": "3 990 грн",
+					"quantity": 1,
+					"measure_unit": "шт.",
+					"image": "https://images.prom.ua/346_w100_h100_originalnyj-podarok.jpg",
+					"url": "https://example.com/p346-originalnyj-podarok.html",
+					"total_price": "3 990 грн",
+					"cpa_commission": {
+						"amount": "0.00"
+					}
+				}
+			],
+			"status": "delivered",
+			"status_name": "Выполнен",
+			"source": "company_site",
+			"price_with_special_offer": null,
+			"special_offer_discount": null,
+			"special_offer_promocode": null,
+			"has_order_promo_free_delivery": false,
+			"cpa_commission": {
+				"amount": "0.00",
+				"is_refunded": false
+			},
+			"utm": null,
+			"dont_call_customer_back": false,
+			"ps_promotion": null
+		},
+		{
+			"id": 121,
+			"date_created": "2023-04-10T14:41:29.312314+00:00",
+			"date_modified": "2023-04-13T13:01:59.389011+00:00",
+			"client_first_name": "Ірма ",
+			"client_second_name": "",
+			"client_last_name": "Григорчук ",
+			"client_id": 854,
+			"email": null,
+			"phone": "+380931234567",
+			"delivery_option": {
+				"id": 852,
+				"name": "Доставка \"Нова Пошта\"",
+				"shipping_service": null
+			},
+			"delivery_address": "Днепр, №13 (до 30 кг): просп. Гагарина, 43",
+			"delivery_provider_data": {
+				"provider": "nova_poshta",
+				"type": "W2W",
+				"sender_warehouse_id": null,
+				"recipient_warehouse_id": "1692284b-e1c2-11e3-8c4a-0050568002cf",
+				"declaration_number": null
+			},
+			"delivery_cost": 0,
+			"payment_option": {
+				"id": 753,
+				"name": "Наложенный платеж \"Нова Пошта\""
+			},
+			"payment_data": null,
+			"price": "6 678 грн",
+			"full_price": "6 678 грн",
+			"client_notes": "",
+			"products": [
+				{
+					"id": 653,
+					"external_id": "1071418115",
+					"name": "Элегантный Подарок Мужчине на День Рождения",
+					"name_multilang": {
+						"ru": "Элегантный Подарок Мужчине на День Рождения",
+						"uk": "Елегантний Подарунок Чоловікові на День Народження"
+					},
+					"sku": "Extern143",
+					"price": "6 678 грн",
+					"quantity": 1,
+					"measure_unit": "шт.",
+					"image": "https://images.prom.ua/2060946338_w100_h100_elegantnyj-podarok-muzhchine.jpg",
+					"url": "https://example.com/p1073700453-elegantnyj-podarok-muzhchine.html",
+					"total_price": "6 678 грн",
+					"cpa_commission": {
+						"amount": "0.00"
+					}
+				},
+				{
+					"id": 345,
+					"external_id": null,
+					"name": "Деревянная открытка в подарок (при полной предоплате)",
+					"name_multilang": {
+						"ru": "Деревянная открытка в подарок (при полной предоплате)",
+						"uk": "Дерев'яна листівка в подарунок (при повній передоплаті)"
+					},
+					"sku": "99999999",
+					"price": "0 грн",
+					"quantity": 1,
+					"measure_unit": "шт.",
+					"image": "https://images.prom.ua/2314868165_w100_h100_derevyannaya-otkrytka-v.jpg",
+					"url": "https://example.com/p1157874820-derevyannaya-otkrytka-podarok.html",
+					"total_price": "0 грн",
+					"cpa_commission": {
+						"amount": "0.00"
+					}
+				},
+				{
+					"id": 234,
+					"external_id": null,
+					"name": "Бесплатная доставка по Украине в отделение Новой почты (при полной предоплате)",
+					"name_multilang": {
+						"ru": "Бесплатная доставка по Украине в отделение Новой почты (при полной предоплате)",
+						"uk": "Безкоштовна доставка по Україні у відділення Нової пошти (при повній передоплаті)"
+					},
+					"sku": "9999999",
+					"price": "0 грн",
+					"quantity": 1,
+					"measure_unit": "шт.",
+					"image": "https://images.prom.ua/2314866252_w100_h100_besplatnaya-dostavka-po.jpg",
+					"url": "https://example.com/p1157872191-besplatnaya-dostavka-ukraine.html",
+					"total_price": "0 грн",
+					"cpa_commission": {
+						"amount": "0.00"
+					}
+				}
+			],
+			"status": "canceled",
+			"status_name": "Отменен",
+			"source": "company_site",
+			"price_with_special_offer": null,
+			"special_offer_discount": null,
+			"special_offer_promocode": null,
+			"has_order_promo_free_delivery": false,
+			"cpa_commission": {
+				"amount": "0.00",
+				"is_refunded": false
+			},
+			"utm": null,
+			"dont_call_customer_back": false,
+			"ps_promotion": null
+		}
+	]
+}

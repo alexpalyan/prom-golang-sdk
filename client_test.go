@@ -3,12 +3,17 @@ package prom
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"reflect"
 	"testing"
+
+	"github.com/alexpalyan/prom-golang-sdk/order"
+	"github.com/alexpalyan/prom-golang-sdk/utils"
+	"github.com/stretchr/testify/require"
 )
 
 type TestCase struct {
-	ApiKey      string
+	APIKey      string
 	Response    DummyResponse
 	GetParams   map[string]string
 	PostRequest DummyPostRequest
@@ -20,15 +25,18 @@ type DummyResponse struct {
 	Error string `json:"error"`
 }
 
-type DummyPostRequest struct {
-}
+type DummyPostRequest struct{}
 
-func ServerDummy(w http.ResponseWriter, r *http.Request) {
-	authKey := r.Header.Get("Authorization")
+func CreateServerDummy(
+	method string,
+	resultFunc func(w http.ResponseWriter, r *http.Request),
+) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		authKey := r.Header.Get("Authorization")
 
-	if authKey != "Bearer authorizedTestKey" {
-		w.WriteHeader(http.StatusUnauthorized)
-		w.Write([]byte(`<html>
+		if authKey != "Bearer authorizedTestKey" {
+			w.WriteHeader(http.StatusUnauthorized)
+			w.Write([]byte(`<html>
  <head>
   <title>401 Not Authenticated</title>
  </head>
@@ -40,28 +48,15 @@ Not Authenticated
 
  </body>
 </html>`))
-		return
-	}
-
-	if r.Method == http.MethodGet {
-		w.WriteHeader(http.StatusOK)
-		switch r.URL.Query().Get("test_param") {
-		case "1":
-			w.Write([]byte("wrong string non-json"))
-			return
-		case "2":
-			w.Write([]byte("{\"error\": \"some errors happen\"}"))
-			return
-		case "3":
-			w.Write([]byte("{\"data\": \"a new data not error\"}"))
 			return
 		}
 
-	} else if r.Method == http.MethodPost {
-
-	} else {
-		w.WriteHeader(http.StatusMethodNotAllowed)
-		w.Write([]byte(`<html>
+		if r.Method == method {
+			w.WriteHeader(http.StatusOK)
+			resultFunc(w, r)
+		} else {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			w.Write([]byte(`<html>
  <head>
   <title>405 Method Not Allowed</title>
  </head>
@@ -71,13 +66,14 @@ Not Authenticated
 
  </body>
 </html>`))
+		}
 	}
 }
 
 func TestClient(t *testing.T) {
 	c := NewClient("testApiKey")
 	cTest := &Client{
-		apiUrl: defaultApiUrl,
+		apiURL: defaultAPIURL,
 		apiKey: "testApiKey",
 	}
 	if !reflect.DeepEqual(cTest, c) {
@@ -87,26 +83,26 @@ func TestClient(t *testing.T) {
 
 func TestGet(t *testing.T) {
 	cases := []TestCase{
-		TestCase{
-			ApiKey:  "unauthorizedKey",
+		{
+			APIKey:  "unauthorizedKey",
 			IsError: true,
 		},
-		TestCase{
-			ApiKey:    "authorizedTestKey",
+		{
+			APIKey:    "authorizedTestKey",
 			GetParams: map[string]string{"test_param": "1"},
 			Response:  DummyResponse{},
 			IsError:   true,
 		},
-		TestCase{
-			ApiKey:    "authorizedTestKey",
+		{
+			APIKey:    "authorizedTestKey",
 			GetParams: map[string]string{"test_param": "2"},
 			Response: DummyResponse{
 				Error: "some errors happen",
 			},
 			IsError: false,
 		},
-		TestCase{
-			ApiKey:    "authorizedTestKey",
+		{
+			APIKey:    "authorizedTestKey",
 			GetParams: map[string]string{"test_param": "3"},
 			Response: DummyResponse{
 				Data: "a new data not error",
@@ -115,12 +111,28 @@ func TestGet(t *testing.T) {
 		},
 	}
 
-	ts := httptest.NewServer(http.HandlerFunc(ServerDummy))
+	ts := httptest.NewServer(
+		http.HandlerFunc(
+			CreateServerDummy(http.MethodGet, func(w http.ResponseWriter, r *http.Request) {
+				switch r.URL.Query().Get("test_param") {
+				case "1":
+					w.Write([]byte("wrong string non-json"))
+					return
+				case "2":
+					w.Write([]byte("{\"error\": \"some errors happen\"}"))
+					return
+				case "3":
+					w.Write([]byte("{\"data\": \"a new data not error\"}"))
+					return
+				}
+			}),
+		),
+	)
 
 	for caseNum, item := range cases {
 		c := &Client{
-			apiUrl: ts.URL,
-			apiKey: item.ApiKey,
+			apiURL: ts.URL,
+			apiKey: item.APIKey,
 		}
 		var response DummyResponse
 
@@ -139,12 +151,58 @@ func TestGet(t *testing.T) {
 }
 
 func TestPost(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(ServerDummy))
+	ts := httptest.NewServer(http.HandlerFunc(
+		CreateServerDummy(http.MethodPost, func(w http.ResponseWriter, r *http.Request) {
+		})))
+
 	c := &Client{
-		apiUrl: ts.URL,
+		apiURL: ts.URL,
 		apiKey: "testApiKey",
 	}
 	var response DummyResponse
 	request := &DummyPostRequest{}
 	c.Post("/test/post", request, &response)
+}
+
+func TestGetOrders(t *testing.T) {
+	require := require.New(t)
+	ts := httptest.NewServer(http.HandlerFunc(
+		CreateServerDummy(http.MethodGet, func(w http.ResponseWriter, r *http.Request) {
+			switch r.URL.Path {
+			case "/orders/list":
+
+				if r.URL.Query().Get("status") == "invalid" {
+					response := []byte(`{"error": "Incorrect status value"}`)
+					w.Write(response)
+					return
+				}
+
+				response, _ := os.ReadFile("testdata/orders_list.json")
+				w.Write(response)
+
+			default:
+				w.WriteHeader(http.StatusNotFound)
+				return
+			}
+		})))
+	defer ts.Close()
+
+	c := &Client{
+		apiURL: ts.URL,
+		apiKey: "authorizedTestKey",
+	}
+	request := OrdersRequest{}
+	orders, err := c.GetOrders(request)
+	require.NoError(err)
+	require.NotNil(orders)
+
+	require.Equal(2, len(orders))
+	ord := orders[0]
+	require.Equal(123, ord.ID)
+	require.Equal(order.StatusDelivered, ord.Status)
+
+	request.Status = utils.Ptr(order.Status("invalid"))
+	orders, err = c.GetOrders(request)
+	require.Error(err)
+	require.Nil(orders)
 }
