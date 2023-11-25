@@ -1,0 +1,71 @@
+{
+  "group_id": 0,
+  "products": [
+    {
+      "id": 660913934,
+      "external_id": "string",
+      "name": "Вечірня сукня",
+      "name_multilang": {
+        "ru": "Название товара на русском языке",
+        "uk": "Назва товару українською мовою"
+      },
+      "sku": "AA7775",
+      "keywords": "Сукня, коктейльна сукня",
+      "description": "Коктейльна сукня або сукня-коктейль - укорочена жіноча сукня\nдля урочистих випадків без коміра та рукавів.\n",
+      "description_multilang": {
+        "ru": "Описание товара на русском языке",
+        "uk": "Опис товару українською мовою"
+      },
+      "selling_type": "universal",
+      "presence": "available",
+      "in_stock": false,
+      "regions": [
+        {
+          "id": 194014000,
+          "ru": "Николаев"
+        }
+      ],
+      "price": 150,
+      "minimum_order_quantity": 0,
+      "discount": {
+        "value": 15,
+        "type": "percent",
+        "date_start": "22.03.2018",
+        "date_end": "22.04.2018"
+      },
+      "currency": "USD",
+      "group": {
+        "id": 2366571,
+        "name": "Коренева група",
+        "name_multilang": {
+          "ru": "Название группы на русском языке",
+          "uk": "Назва групи українською мовою"
+        }
+      },
+      "category": {
+        "id": 35402,
+        "caption": "Сукні жіночі"
+      },
+      "prices": [
+        {
+          "price": 100.75,
+          "minimum_order_quantity": 10
+        }
+      ],
+      "main_image": "https://my.example.com/media/images/1075345153_w200_h200_dress.jpg",
+      "images": [
+        {
+          "url": "https://my.example.com/media/images/1075345152_w200_h200_dress_front.png",
+          "thumbnail_url": "https://my.example.com/media/images/1075345152_w100_h100_dress_front.png",
+          "id": 1075345152
+        }
+      ],
+      "status": "on_display",
+      "quantity_in_stock": 123,
+      "measure_unit": "шт.",
+      "is_variation": false,
+      "variation_base_id": 123123123,
+      "variation_group_id": 321321
+    }
+  ]
+}
